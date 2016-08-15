@@ -11,6 +11,7 @@ var frames = 0;
 var keymap = (function() { var array = []; for (var i = 0; i < 256; i++) { array.push(false); } return array; })();
 
 var clientId, debug;
+var onlineUsers = 0;
 
 class World {
 	loadWorldMap() {
@@ -184,6 +185,7 @@ var draw = function() {
 	ctx.fillText("Coords: (" + Math.round(player.x) + ", " + Math.round(player.y) + ")", 15, 70);
 	var chunk = player.getChunk();
 	ctx.fillText("Chunk: (" + Math.round(chunk.x) + ", " + Math.round(chunk.y) + ")", 15, 90);
+	ctx.fillText("Online Users: " + onlineUsers, 15, 110);
 };
 
 var resize = function() {
@@ -232,6 +234,10 @@ var keydown = function(e) {
 var keyup = function(e) {
 	keymap[e.keyCode] = false;
 }
+
+socket.on("online users", function(number) {
+	onlineUsers = number;
+});
 
 $(function() {
 	init().then(function() {

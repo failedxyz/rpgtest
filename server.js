@@ -30,7 +30,7 @@ var getChunk = function(obj) {
 io.on("connection", function(socket) {
 	socket.on("player join", function() {
 		var getRandomColor = function() {
-			return (function(m,s,c){return (c ? arguments.callee(m,s,c-1) : '#') + s[m.floor(m.random() * s.length)]})(Math,'0123456789ABCDEF',5).replace("#", "");
+			return (function(m, s, c){return (c ? arguments.callee(m, s,c - 1) : '#') + s[m.floor(m.random() * s.length)]})(Math,'0123456789ABCDEF',5).replace("#", "");
 		};
 		var playerColor = getRandomColor();
 		while ([0].concat(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(playerColor)).reduce(function(a, b) { return a + parseInt(b, 16); }) < 384) {
@@ -44,8 +44,10 @@ io.on("connection", function(socket) {
 			color: playerColor,
 			cid: socket.cid
 		});
+		io.emit("online users", Object.keys(sessions).length);
 		socket.on("disconnect", function() {
 			delete sessions[socket.cid];
+			io.emit("online users", Object.keys(sessions).length);
 		});
 		socket.on("player state", function(data) {
 			sessions[socket.cid]["coords"] = { x: data.coords.x, y: data.coords.y };
